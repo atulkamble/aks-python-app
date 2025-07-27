@@ -497,6 +497,9 @@ git clone https://github.com/atulkamble/aks-python-app.git
 cd aks-python-app
 ls
 
+powershell >> run as admin 
+winget install kubernetes.kubectl
+
 docker login
 docker build -t atuljkamble/inventory-app .
 
@@ -530,12 +533,14 @@ kubectl get svc
 
 // note down external ip and paste in browser 
 
+// deploy aks using terraform 
 
+cd terraform 
 
-
-
-
-
+terraform init 
+terraform plan 
+terraform apply 
+terraform destroy 
 
 
 ```
