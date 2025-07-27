@@ -3,7 +3,6 @@ provider "azurerm" {
   subscription_id = "cc57cd42-dede-4674-b810-a0fbde41504a"
 }
 
-
 provider "kubernetes" {
   host                   = azurerm_kubernetes_cluster.aks.kube_config[0].host
   client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate)
@@ -17,7 +16,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = var.cluster_name
+  name                = var.aks_cluster_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "inventoryapp"
