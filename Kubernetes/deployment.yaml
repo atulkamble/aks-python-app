@@ -19,5 +19,4 @@ spec:
         image: docker.io/atuljkamble/inventory-app:latest
         ports:
         - containerPort: 5000
-      imagePullSecrets:
-      - name: acr-secret
+     
