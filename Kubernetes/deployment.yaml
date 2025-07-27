@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inventory-deployment
+  labels:
+    app: inventory
 spec:
   replicas: 2
   selector:
@@ -14,6 +16,6 @@ spec:
     spec:
       containers:
       - name: inventory-container
-        image: atulkamble.azurecr.io/aks-python-app  # Update this to your DockerHub or ACR image
+        image: atulkamble.azurecr.io/aks-python-app  # Use full image path with tag if available
         ports:
         - containerPort: 5000
