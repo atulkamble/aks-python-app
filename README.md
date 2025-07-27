@@ -483,3 +483,59 @@ kubectl get svc inventory-service -w
 ```
 
 ---
+
+
+## working fine 
+
+```
+// keep docker desktop >> running 
+// install git 
+
+az login 
+
+git clone https://github.com/atulkamble/aks-python-app.git
+cd aks-python-app
+ls
+
+docker login
+docker build -t atuljkamble/inventory-app .
+
+docker buildx build --platform linux/amd64 -t atuljkamble/inventory-app:latest
+
+docker push atuljkamble/inventory-app:latest
+
+docker run -d -p 5000:5000 atuljkamble/inventory-app
+
+check url from browser >> http://localhost:5000/
+
+sudo docker container ls
+
+sudo docker container stop 3ba110aaef45
+
+docker ps -a
+
+// create aks cluster
+2 nodes min 
+3 nodes max 
+Node sizes: Standard_DC2s_v2
+
+az account set --subscription cc57cd42-dede-4674-b810-a0fbde41504a
+
+az aks get-credentials --resource-group k8s --name newcluster --overwrite-existing
+
+kubectl apply -f Kubernetes/deplyment.yaml
+kubectl apply -f Kubernetes/service.yaml
+
+kubectl get svc
+
+// note down external ip and paste in browser 
+
+
+
+
+
+
+
+
+
+```
