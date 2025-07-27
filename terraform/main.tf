@@ -1,6 +1,8 @@
 provider "azurerm" {
   features {}
+  subscription_id = "cc57cd42-dede-4674-b810-a0fbde41504a"
 }
+
 
 provider "kubernetes" {
   host                   = azurerm_kubernetes_cluster.aks.kube_config[0].host
@@ -15,7 +17,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = var.aks_cluster_name
+  name                = var.cluster_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "inventoryapp"
@@ -29,22 +31,63 @@ resource "azurerm_kubernetes_cluster" "aks" {
   identity {
     type = "SystemAssigned"
   }
-
-  tags = {
-    Environment = "Dev"
-  }
 }
 
-resource "kubernetes_namespace" "app" {
+resource "kubernetes_deployment" "inventory" {
   metadata {
-    name = "inventory"
+    name = "inventory-deployment"
+    labels = {
+      app = "inventory"
+    }
+  }
+
+  spec {
+    replicas = 2
+
+    selector {
+      match_labels = {
+        app = "inventory"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "inventory"
+        }
+      }
+
+      spec {
+        container {
+          name  = "inventory-container"
+          image = "atulkamble.azurecr.io/aks-python-app" # Replace with your actual image
+          port {
+            container_port = 5000
+          }
+        }
+      }
+    }
   }
 }
 
-resource "kubernetes_manifest" "deployment" {
-  manifest = yamldecode(file("${path.module}/kubernetes/deployment.yaml"))
-}
+resource "kubernetes_service" "inventory" {
+  metadata {
+    name = "inventory-service"
+    labels = {
+      app = "inventory"
+    }
+  }
 
-resource "kubernetes_manifest" "service" {
-  manifest = yamldecode(file("${path.module}/kubernetes/service.yaml"))
+  spec {
+    selector = {
+      app = "inventory"
+    }
+
+    port {
+      port        = 80
+      target_port = 5000
+    }
+
+    type = "LoadBalancer"
+  }
 }
