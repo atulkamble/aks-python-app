@@ -1,0 +1,36 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Git and CI/CD
+.git/
+.github/
+.gitignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Logs and system files
+*.log
+*.swp
+.DS_Store
+
+# Scripts and unused files
+scripts/
+README.md
+LICENSE
