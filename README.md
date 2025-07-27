@@ -401,10 +401,85 @@ Open browser: `http://<EXTERNAL-IP>`
 
 ---
 
-## 📃 License
+## Commands
 
-MIT
+```
+az login --tenant cd62340f-1fff-4e1b-9527-7f7b1ab0fdc6
 
+1
+
+az account show
+
+# Build with a tag
+docker build -t atulkamble.azurecr.io/aks-python-app:latest .
+
+# Login to ACR
+az acr login --name atulkamble
+
+# Push to ACR
+docker push atulkamble.azurecr.io/aks-python-app:latest
+
+
+az acr create \
+  --resource-group rg-aks-inventory \
+  --name atulkamble \
+  --sku Basic \
+  --location eastus
+
+az aks update \
+  --name aks-inventory-cluster \
+  --resource-group rg-aks-inventory \
+  --attach-acr atulkamble
+
+az acr update -n atulkamble --admin-enabled true
+
+kubectl create secret docker-registry acr-secret \
+  --docker-server=atulkamble.azurecr.io \
+  --docker-username="$(az acr credential show -n atulkamble --query 'username' -o tsv)" \
+  --docker-password="$(az acr credential show -n atulkamble --query 'passwords[0].value' -o tsv)"
+
+
+az acr list --query "[].{name:name, resourceGroup:resourceGroup}" -o table
+
+// docker desktop in running 
+
+az acr login --name atulkamble
+
+docker build -t atulkamble.azurecr.io/aks-python-app .
+docker push atulkamble.azurecr.io/aks-python-app
+
+docker buildx build --platform linux/amd64 -t atuljkamble/inventory-app:latest --push .
+
+docker buildx build --platform linux/amd64 -t atuljkamble/inventory-app:latest --push .
+
+kubectl get pods
+
+az aks get-credentials \
+  --resource-group rg-aks-inventory \
+  --name aks-inventory-cluster \
+  --overwrite-existing
+
+kubectl apply -f Kubernetes/deployment.yaml
+kubectl apply -f Kubernetes/service.yaml
+
+kubectl describe svc inventory-service
+
+kubectl get svc inventory-service -w
+
+EXTERNAL_IP=$(kubectl get svc inventory-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo $EXTERNAL_IP
+curl http://$EXTERNAL_IP
+
+kubectl delete svc inventory-service
+kubectl apply -f Kubernetes/service.yaml
+
+kubectl delete pods --all
+kubectl rollout restart deployment inventory-deployment
+
+kubectl get nodes
+kubectl get pods
+kubectl get svc
+kubectl get svc inventory-service -w
 ```
 
 ---
